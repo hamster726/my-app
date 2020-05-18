@@ -27,24 +27,38 @@ export default class App extends Component {
 				6,
 				{
 					label: 'Это мое первое приложение на React',
+					like: false,
 					important: true,
 					id: nextId()
 				},
 				{
 					label: 'Оно работает как обычное приложение на Windows',
+					like: false,
 					important: false,
 					id: nextId()
 				},
 				{
 					label: 'С этими знаниями я хочу написать свой собственный сайт - библиотеку FLAC песен',
+					like: false,
+					important: false,
+					id: nextId()
+				},
+				{
+					label: 'Подумываю в дипломной работе создать сайт для Питчера. Там тематика кофейная)',
+					like: true ,
 					important: false,
 					id: nextId()
 				}
 
-			]
+			],
+			term: '',
+			filter: 'all'
 		};
 		this.deleteItem = this.deleteItem.bind(this);
 		this.addItem = this.addItem.bind(this);
+		this.onToggle = this.onToggle.bind(this);
+		this.onUpdateSearch = this.onUpdateSearch.bind(this);
+		this.onFilterSelect= this.onFilterSelect.bind(this);
 
 	}
 
@@ -80,16 +94,88 @@ export default class App extends Component {
 		console.log(newItem.id);
 	}
 
+	onToggle (id, button) {
+		this.setState(({data}) =>{
+			const index = data.findIndex(elem => elem.id === id);
+
+			const old = data[index];
+
+			let newItem;
+
+			if (button.like){
+				newItem = {...old, like: !old.like};
+			} else if (button.important){
+				newItem = {...old, important: !old.important};
+			}
+
+
+	const before = data.slice(0, index);
+			const after = data.slice(index + 1);
+
+			const newArr = [...before, newItem, ...after];
+
+			return {
+				data : newArr
+			};
+		})
+	}
+
+	searchPost(items, term) {
+		if (term.length === 0 || term === ''){
+			return items;
+		}
+
+		return items.filter((item) => {
+			if (!isNaN(item)) return ;
+			return (item.label.toLowerCase().indexOf(term.toLowerCase()) > -1)
+		});
+	}
+
+	filterPost(items, filter) {
+		if (filter === 'like'){
+			return items.filter(item => item.like);
+		} else return items;
+
+	}
+
+	onFilterSelect (filter) {
+		this.setState({filter});
+	}
+
+	onUpdateSearch (term) {
+		this.setState({term})
+	}
+
+
+
 	render() {
+
+		const {data, term, filter} = this.state;
+
+		const liked = data.filter(item => item.like).length;
+		const allPosts = data.filter(item => isNaN(item)).length;
+
+		const visiblePosts = this.filterPost(this.searchPost(data, term), filter);
+
 		return (
 			<StyledAppBlock>
-				<AppHeader/>
+				<AppHeader
+				liked ={liked}
+				allPosts = {allPosts}
+				/>
 				<StyledSearchPanel>
-					<SearchPanel/>
-					<PostStatusFiler/>
+					<SearchPanel
+						onUpdateSearch ={this.onUpdateSearch}
+					/>
+					<PostStatusFiler
+						filter = {filter}
+						onFilterSelect = {this.onFilterSelect}/>
 				</StyledSearchPanel>
-				<PostList posts={this.state.data}
-					onDelete={this.deleteItem}/>
+				<PostList
+					posts={visiblePosts}
+					onDelete={this.deleteItem}
+					onToggle={this.onToggle}
+				/>
 				<PostAddForm
 					onAdd={this.addItem}/>
 			</StyledAppBlock>

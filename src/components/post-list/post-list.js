@@ -18,7 +18,7 @@ const StyledListGroupItem = styled(ListGroupItem)`
 
 
 
-const PostList = ({posts, onDelete}) => {
+const PostList = ({posts, onDelete, onToggle}) => {
 
 	const elements = posts.map((item) => {
 		if (!isNaN(item)) return null;
@@ -30,7 +30,10 @@ const PostList = ({posts, onDelete}) => {
 				<PostListItem
 					{
 						...itemProps}
-					onDelete={() => onDelete(id)}/>
+					onDelete={() => onDelete(id)}
+					onToggleImportant={() => onToggle(id, {important: true})}
+					onToggleLiked={() => onToggle(id, {like: true})}
+				/>
 			</StyledListGroupItem>
 		);
 	});
