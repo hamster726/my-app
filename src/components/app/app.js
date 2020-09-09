@@ -32,19 +32,19 @@ export default class App extends Component {
 					id: nextId()
 				},
 				{
-					label: 'Оно работает как обычное приложение на Windows',
+					label: 'Оно работает как обычное приложение, SPA',
 					like: false,
 					important: false,
 					id: nextId()
 				},
 				{
-					label: 'С этими знаниями я хочу написать свой собственный сайт - библиотеку FLAC песен',
+					label: 'С полученными знаниями я хочу написать свой собственный сайт :)',
 					like: false,
 					important: false,
 					id: nextId()
 				},
 				{
-					label: 'Подумываю в дипломной работе создать сайт для Питчера. Там тематика кофейная)',
+					label: 'Подумываю создать сайт для FLAC песен. Я тот еще меломан :)',
 					like: true ,
 					important: false,
 					id: nextId()
@@ -91,7 +91,6 @@ export default class App extends Component {
 				data: newArr
 			};
 		});
-		console.log(newItem.id);
 	}
 
 	onToggle (id, button) {
